@@ -1,0 +1,12 @@
+{
+  "name": "@sourcebin/linguist",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "node src/index.js"
+  },
+  "devDependencies": {
+    "axios": "^0.19.1",
+    "js-yaml": "^3.13.1"
+  }
+}
