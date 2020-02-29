@@ -1,4 +1,8 @@
 const fs = require('fs');
+const { join } = require('path');
+const yaml = require('js-yaml');
+const merge = require('merge');
+
 const download = require('./download.js');
 const config = require('../config.json');
 
@@ -8,6 +12,14 @@ const indexFile = `
   module.exports.linguist = require('./linguist.json');
   module.exports.languages = require('./languages.json');
 `;
+
+function mergeOverrides(linguist) {
+  const overrides = yaml.safeLoad(
+    fs.readFileSync(join(__dirname, 'override.yml')),
+  );
+
+  return merge.recursive(linguist, overrides);
+}
 
 function transformLanguage(name, data) {
   return {
@@ -38,14 +50,24 @@ function transformLanguages(githubLinguist) {
 }
 
 download(config.url).then((githubLinguist) => {
-  const linguist = transformLinguist(githubLinguist);
-  const languages = transformLanguages(githubLinguist);
+  const linguist = mergeOverrides(githubLinguist);
 
   if (!fs.existsSync(DIST_DIR)) {
     fs.mkdirSync(DIST_DIR);
   }
 
-  fs.writeFileSync(`${DIST_DIR}/index.js`, indexFile);
-  fs.writeFileSync(`${DIST_DIR}/linguist.json`, JSON.stringify(linguist, null, 2));
-  fs.writeFileSync(`${DIST_DIR}/languages.json`, JSON.stringify(languages, null, 2));
+  fs.writeFileSync(
+    join(DIST_DIR, 'index.js'),
+    indexFile,
+  );
+
+  fs.writeFileSync(
+    join(DIST_DIR, 'linguist.json'),
+    JSON.stringify(transformLinguist(linguist), null, 2),
+  );
+
+  fs.writeFileSync(
+    join(DIST_DIR, 'languages.json'),
+    JSON.stringify(transformLanguages(linguist), null, 2),
+  );
 });
