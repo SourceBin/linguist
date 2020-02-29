@@ -22,8 +22,13 @@ function mergeOverrides(linguist) {
 }
 
 function transformLanguage(name, data) {
+  const extension = data.extensions
+    ? data.extensions[0].replace(/^\./, '')
+    : undefined;
+
   return {
     name,
+    extension,
     aliases: data.aliases,
     aceMode: data.ace_mode,
   };
