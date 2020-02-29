@@ -10,6 +10,7 @@ Small package that turns `github/linguist` [languages.yml](https://github.com/gi
 {
   "183": {
     "name": "JavaScript",
+    "extension": "js",
     "aliases": [
       "js",
       "node"
