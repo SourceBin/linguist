@@ -22,12 +22,17 @@ function mergeOverrides(linguist) {
 }
 
 function transformLanguage(name, data) {
+  const color = data.color
+    ? data.color.slice(1)
+    : undefined;
+
   const extension = data.extensions
     ? data.extensions[0].replace(/^\./, '')
     : undefined;
 
   return {
     name,
+    color,
     extension,
     aliases: data.aliases,
     aceMode: data.ace_mode,
